@@ -1,0 +1,6 @@
+<PuzzleData name="SAL3_Joining" width="16" height="10" numColours="4" colours="3333333333333333333333333333333333322211112223333332221111222333333222111122233333322211112223333332221111222333333222111122233333333333333333333333333333333333" gold="2" silver="3" bronze="4">
+<Solution length="2">
+    <Turn x="7" y="4" colour="2"/>
+    <Turn x="7" y="4" colour="3"/>
+</Solution>
+</PuzzleData>

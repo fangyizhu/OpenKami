@@ -1,0 +1,7 @@
+<PuzzleData name="SAL6_SideFlow" width="16" height="10" numColours="3" colours="1111111222222222122211131113222212223333111333331333222222233333133322222223333311111111111111113333222112221111333322211222111122223331111113332222333111111333" gold="3" silver="4" bronze="5">
+<Solution length="3">
+    <Turn x="9" y="8" colour="3"/>
+    <Turn x="2" y="5" colour="2"/>
+    <Turn x="9" y="1" colour="2"/>
+</Solution>
+</PuzzleData>

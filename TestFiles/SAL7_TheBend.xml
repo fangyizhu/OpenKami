@@ -1,0 +1,8 @@
+<PuzzleData name="SAL7_TheBend" width="16" height="10" numColours="4" colours="1111133333333333111113333333333311133333333333331131122222222333113112222222233322322111111223332232211111122333222333333112233322222333311223332222233331122333" gold="4" silver="5" bronze="6">
+    <Solution length="4">
+        <Turn x="6" y="5" colour="2"/>
+        <Turn x="10" y="4" colour="3"/>
+        <Turn x="1" y="8" colour="3"/>
+        <Turn x="11" y="7" colour="1"/>
+    </Solution>
+</PuzzleData>

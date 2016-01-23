@@ -1,0 +1,7 @@
+<PuzzleData name="SAL4_Rings" width="16" height="10" numColours="4" colours="3311111111111133331333333333313333132222222231333313211111123133331321222212313333132122221231333313211111123133331322222222313333133333333331333311111111111133" gold="3" silver="4" bronze="5">
+<Solution length="3">
+    <Turn x="7" y="3" colour="2"/>
+    <Turn x="7" y="0" colour="3"/>
+    <Turn x="7" y="3"  colour="3"/>
+</Solution>
+</PuzzleData>

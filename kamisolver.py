@@ -1,8 +1,9 @@
 import xml.etree.ElementTree as ET
 import numpy as np
+from collections import Counter
 
 # parse xml file to colormap
-tree = ET.parse('StageA/SAL9_Targets.xml')
+tree = ET.parse('TestFiles/SAL9_Targets.xml')
 root = tree.getroot()
 
 width = int(root.get('width'))
@@ -42,7 +43,8 @@ class Node:
 
 # parse colormap to graph
 parsedMap = np.array([0] * height * width).reshape((height, width))
-nodes = []
+nodes = [] # all the nodes (patches) on graph
+
 for y in range(height):
     for x in range(width):
         color = colmap[y,x]
@@ -72,9 +74,31 @@ for startNode in nodes:
             if grid in endNode.coordlist:
                 startNode.appendNeighborNode(endNode.id)
 
+# Calculate heuristic value for each node's each potential move.
+# H = N - C
+# H: Heuristic Value, moves with higher heuristic value get searched first
+# N: Number of target colored neighbor nodes 
+# TODO: C: The gretest distance to other node (eccentricity)
 
-
-
+# Generate a list of all possible moves with heuristic valueH = N
+# [(node id, target color, H)]
+moves = []
 for node in nodes:
-    node.write()
+    # count the number of neighbors in each color, then sort by count
+    colorCount = Counter([nodes[x].color for x in node.neighborNodes]).most_common()
+    for item in colorCount:
+        move = [node.id, item[0], item[1]]
+        moves.append(move)
+moves.sort(key=lambda x: x[2], reverse=True)
+print moves
+
+
+
+
+
+
+
+
+
+
 

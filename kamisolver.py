@@ -1,6 +1,8 @@
 import xml.etree.ElementTree as ET
 import numpy as np
 from collections import Counter
+from Node import Node
+from State import State
 
 # parse xml file to colormap
 tree = ET.parse('TestFiles/SAL9_Targets.xml')
@@ -14,42 +16,17 @@ colmapArray = np.fromstring(colmapString, dtype=int, sep=' ')
 colmap = colmapArray.reshape((height, width))
 print colmap
 
-class Node:
-    def __init__(self, nodeid, color, coordl, neighborn, neighborg):
-        self.id = nodeid # int
-        self.color = color # int
-        self.coordlist = coordl #[[y,x]]
-        self.neighborNodes = neighborn #[list of neighbor id]
-        self.neighborGrids = neighborg #[[y,x]]
-
-    def appendCoord(self, coord):
-        if not coord in self.coordlist:
-            self.coordlist.append(coord)
-
-    def appendNeighborNode(self, node):
-        if not node in self.neighborNodes:
-            self.neighborNodes.append(node)
-
-    def appendNeighborGrid(self, grid):
-        if not grid in self.neighborGrids:
-            self.neighborGrids.append(grid)
-
-    def write(self):
-        print "id: ", self.id
-        print "color: ", self.color
-        print "coordlist", self.coordlist
-        print "neighborNodes: ", self.neighborNodes
-        print "neighborGrids: ", self.neighborGrids
-
 # parse colormap to graph
 parsedMap = np.array([0] * height * width).reshape((height, width))
-nodes = [] # all the nodes (patches) on graph
+graph = [] # all the nodes (patches) on graph
+startingNeighborGrids = []
 
 for y in range(height):
     for x in range(width):
         color = colmap[y,x]
         if parsedMap[y,x] == 0:
-            node = Node(len(nodes), color, [(y,x)], [], [])
+            node = Node(len(graph), color, [(y,x)], [])
+            startingNeighborGrids.append([])
             q = [(y,x)]
             while q:
                 current = q.pop(0)
@@ -63,14 +40,14 @@ for y in range(height):
                                 parsedMap[coord] = 1
                                 q.append(coord)
                         else:
-                            node.appendNeighborGrid(coord)
+                            startingNeighborGrids[-1].append(coord)
 
-            nodes.append(node)
+            graph.append(node)
 
 # link nodes to each other
-for startNode in nodes:
-    for grid in startNode.neighborGrids:
-        for endNode in nodes:
+for startNode in graph:
+    for grid in startingNeighborGrids[startNode.id]:
+        for endNode in graph:
             if grid in endNode.coordlist:
                 startNode.appendNeighborNode(endNode.id)
 
@@ -83,14 +60,19 @@ for startNode in nodes:
 # Generate a list of all possible moves with heuristic valueH = N
 # [(node id, target color, H)]
 moves = []
-for node in nodes:
+for node in graph:
     # count the number of neighbors in each color, then sort by count
-    colorCount = Counter([nodes[x].color for x in node.neighborNodes]).most_common()
+    colorCount = Counter([graph[x].color for x in node.neighborNodes]).most_common()
     for item in colorCount:
         move = [node.id, item[0], item[1]]
         moves.append(move)
 moves.sort(key=lambda x: x[2], reverse=True)
 print moves
+
+# Make a DFS search to find an optimal solution.
+# Keep track of the solution with the minimum steps,
+# prune the branches that's deeper than the shortest solution so far.
+
 
 
 

@@ -1,10 +1,6 @@
 class State:
-    def __init__(self, stepCount, graph, nMoves, pMoves):
+    def __init__(self, stepCount, graph, nMove, pMoves):
         self.stepCount = step
         self.graph = graph
-        self.nextMoves = nMoves
+        self.nextMove = nMove
         self.previousMoves = pMoves
-
-
-
-        

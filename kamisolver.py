@@ -14,41 +14,45 @@ colmapString = ' '.join(root.get('colours'))
 
 colmapArray = np.fromstring(colmapString, dtype=int, sep=' ')
 colmap = colmapArray.reshape((height, width))
-print colmap
 
 # parse colormap to graph
 parsedMap = np.array([0] * height * width).reshape((height, width))
-graph = [] # all the nodes (patches) on graph
 startingNeighborGrids = []
+nodeGrids = []
+graph = [] # all the nodes (patches) on graph
 
 for y in range(height):
     for x in range(width):
         color = colmap[y,x]
         if parsedMap[y,x] == 0:
             node = Node(len(graph), color, [(y,x)], [])
-            startingNeighborGrids.append([])
+            currentNodeGrids = []
+            neighborGrids = []
+            
             q = [(y,x)]
             while q:
                 current = q.pop(0)
                 cy = current[0]
                 cx = current[1]
-                for coord in [(cy-1,cx),(cy,cx-1),(cy+1,cx),(cy,cx+1)]:
+                for coord in [(cy, cx),(cy-1,cx),(cy,cx-1),(cy+1,cx),(cy,cx+1)]:
                     if -1 < coord[0] < height and -1 < coord[1] < width:
                         if colmap[coord] == color:
-                            if not coord in node.coordlist:
-                                node.appendCoord(coord)
-                                parsedMap[coord] = 1
+                            if not coord in currentNodeGrids:
+                                currentNodeGrids.append(coord)
+                                parsedMap[coord] = len(graph)
                                 q.append(coord)
                         else:
-                            startingNeighborGrids[-1].append(coord)
-
+                            if not coord in neighborGrids:
+                                neighborGrids.append(coord)
+            nodeGrids.append(currentNodeGrids)
+            startingNeighborGrids.append(neighborGrids)
             graph.append(node)
 
 # link nodes to each other
 for startNode in graph:
     for grid in startingNeighborGrids[startNode.id]:
         for endNode in graph:
-            if grid in endNode.coordlist:
+            if grid in nodeGrids[endNode.id]:
                 startNode.appendNeighborNode(endNode.id)
 
 # Calculate heuristic value for each node's each potential move.
@@ -72,8 +76,7 @@ print moves
 # Make a DFS search to find an optimal solution.
 # Keep track of the solution with the minimum steps,
 # prune the branches that's deeper than the shortest solution so far.
-
-
+stateStack = []
 
 
 

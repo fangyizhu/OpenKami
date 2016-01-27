@@ -5,7 +5,7 @@ from Node import Node
 from State import State
 
 # parse xml file to colormap
-tree = ET.parse('TestFiles/SAL9_Targets.xml')
+tree = ET.parse('TestFiles/SAL8_LadderLines.xml')
 root = tree.getroot()
 
 width = int(root.get('width'))
@@ -18,7 +18,7 @@ colmap = colmapArray.reshape((height, width))
 # parse colormap to graph
 parsedMap = np.array([0] * height * width).reshape((height, width))
 startingNeighborGrids = []
-nodeGrids = []
+startingNodeGrids = []
 graph = [] # all the nodes (patches) on graph
 
 for y in range(height):
@@ -44,7 +44,7 @@ for y in range(height):
                         else:
                             if not coord in neighborGrids:
                                 neighborGrids.append(coord)
-            nodeGrids.append(currentNodeGrids)
+            startingNodeGrids.append(currentNodeGrids)
             startingNeighborGrids.append(neighborGrids)
             graph.append(node)
 
@@ -52,7 +52,7 @@ for y in range(height):
 for startNode in graph:
     for grid in startingNeighborGrids[startNode.id]:
         for endNode in graph:
-            if grid in nodeGrids[endNode.id]:
+            if grid in startingNodeGrids[endNode.id]:
                 startNode.appendNeighborNode(endNode.id)
 
 # Calculate heuristic value for each node's each potential move.
@@ -62,28 +62,23 @@ for startNode in graph:
 # TODO: C: The gretest distance to other node (eccentricity)
 
 # Generate a list of all possible moves with heuristic valueH = N
-# [(node id, target color, H)]
-moves = []
-for node in graph:
-    # count the number of neighbors in each color, then sort by count
-    colorCount = Counter([graph[x].color for x in node.neighborNodes]).most_common()
-    for item in colorCount:
-        move = [node.id, item[0], item[1]]
-        moves.append(move)
-moves.sort(key=lambda x: x[2], reverse=True)
-print moves
+# [list of [node id, target color, H, index in graphStates]]
+graphStates = [graph] # store up each inital state of the moves
+
+def generate_next_moves(state_id):
+    moves = []
+    currentGraph = graphStates[state_id]
+    for node in currentGraph:
+        # count the number of neighbors in each color, then sort by count
+        colorCount = Counter([currentGraph[x].color for x in node.neighborNodes]).most_common()
+        for item in colorCount:
+            move = [node.id, item[0], item[1], state_id]
+            moves.append(move)
+    moves.sort(key=lambda x: x[2], reverse=True)
+    return moves
 
 # Make a DFS search to find an optimal solution.
 # Keep track of the solution with the minimum steps,
 # prune the branches that's deeper than the shortest solution so far.
-stateStack = []
 
-
-
-
-
-
-
-
-
-
+moveStack = [] # [stack of [node id, target color, H, index in graphStates]]

@@ -1,16 +1,16 @@
 class Node:
-    def __init__(self, nodeid, color, coord, neighborn):
-        self.id = nodeid # int
-        self.color = color # int
-        self.coord = coord # [(y,x)]
-        self.neighborNodes = neighborn #[list of neighbor id]
+    def __init__(self, nodeid, color, coord, neighbors):
+        self.id = nodeid
+        self.color = color
+        self.coord = coord
+        self.neighborNodes = neighbors
 
-    def appendNeighborNode(self, node):
-        if not node in self.neighborNodes:
+    def append_neighbor_nodes(self, node):
+        if node not in self.neighborNodes:
             self.neighborNodes.append(node)
 
     def write(self):
-        print "id: ", self.id
-        print "color: ", self.color
-        print "coord", self.coord
-        print "neighborNodes: ", self.neighborNodes
+        print("id: ", self.id)
+        print("color: ", self.color)
+        print("coord", self.coord)
+        print("neighborNodes: ", self.neighborNodes)
